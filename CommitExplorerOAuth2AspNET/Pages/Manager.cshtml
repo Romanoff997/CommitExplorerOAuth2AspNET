@@ -1,0 +1,62 @@
+﻿@page
+@model CommitExplorerOAuth2AspNET.Pages.ManagerModel
+@{
+}
+<form method="post">
+    <div class="form-group">
+        <label asp-for="owner" class="control-label"> owner</label>
+        <input asp-for="owner" type="text" class="form-control">
+        <span asp-validation-for="owner" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="repo" class="control-label">repo </label>
+        <input asp-for="repo" type="text" class="form-control">
+        <span asp-validation-for="repo" class="text-danger"></span>
+    </div>
+
+
+    @Html.AntiForgeryToken()
+    <input type="submit" class="btn btn-primary" value="Get commits" />
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Login</th>
+            <th>NodeId</th>
+            <th></th>
+            <th> </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody id="oi">
+        @if (Model.commits != null)
+        {
+            for (int i = 0; i < Model.commits.Count; i++)
+            {
+                <tr>
+                    <td>
+                        <input type="text" class="form-control" asp-for="@Model.commits[i].Author.Login" />
+                    </td>
+
+                    <td>
+                        <input type="text" class="form-control" asp-for="@Model.commits[i].NodeId" />
+                    </td>
+
+                    <td>
+
+                    </td>
+
+                    <td>
+
+                    </td>
+
+                    <td>
+
+                    </td>
+
+                </tr>
+            }
+        }
+    </tbody>
+</table>
