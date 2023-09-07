@@ -1,9 +1,18 @@
 using AspNet.Security.OAuth.GitHub;
 using CommitExplorerOAuth2AspNET.Controllers;
 using CommitExplorerOAuth2AspNET.Domain.Repositories;
+using CommitExplorerOAuth2AspNET.Domain.Repositories.Abstract;
+using CommitExplorerOAuth2AspNET.Interface;
+using CommitExplorerOAuth2AspNET.Mappings;
 using CommitExplorerOAuth2AspNET.Service;
+using CommitExplorerOAuth2AspNET.Services;
+using CommitExplorerOAuth2AspNET.Shared.Interface;
+using CommitExplorerOAuth2AspNET.Shared.Services;
+using CRUDRazorWebAPI.Client.Middleware;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.EntityFrameworkCore;
+using SimplifyLink.Domain.Repositories.EntityFramework;
 using System.Reflection.Metadata.Ecma335;
 using System.Security.Claims;
 
@@ -11,7 +20,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 ConfigurationManager configuration = builder.Configuration;
-var gitConfig = configuration.GetSection("GitConfiguration").Get<GitConfiguration>(); 
+var appConfig = configuration.GetSection("AppConfiguration").Get<MyConfiguration>();
+
 builder.Services.AddAuthentication(o =>
 {
     o.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -31,18 +41,25 @@ builder.Services.AddAuthentication(o =>
             {
                 if (context.AccessToken is { } token)
                 {
-                    context.Identity?.AddClaim(new Claim(gitConfig.tokenName, token));
+                    context.Identity?.AddClaim(new Claim(appConfig.tokenName, token));
                 }
 
                 return Task.CompletedTask;
             };
         });
-builder.Services.AddRazorPages();
-//builder.Services.AddDbContext<MyDbContext>();
-////builder.Services.AddTransient<ICityModelRepository, EFCityModelRepository>();
-//builder.Services.AddTransient<DataManager>();
+
+builder.Services.AddDbContext<MyDbContext>(options => options.UseSqlServer(appConfig.connectionString));
+builder.Services.AddDbContext<MyDbContext>();
+builder.Services.AddTransient<GitHubController>();
+builder.Services.AddTransient<ICommitModelRepository, EFCommitModelRepository>();
+builder.Services.AddTransient<DataManager>();
 builder.Services.AddTransient<GitHubService>();
-builder.Services.AddSingleton(gitConfig);
+builder.Services.AddTransient<IMapingService, MappingServiceNative>();
+builder.Services.AddSingleton(appConfig);
+builder.Services.AddSingleton<IJsonConverter>(json => new JsonNewtonConverter(new Newtonsoft.Json.JsonSerializerSettings()));
+
+builder.Services.AddRazorPages();
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
@@ -50,6 +67,9 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
+
+app.UseMiddleware<ErrorHandlingMiddleware>();
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 

@@ -1,3 +1,5 @@
+using CommitExplorerOAuth2AspNET.Controllers;
+using CommitExplorerOAuth2AspNET.Domain.Entities;
 using CommitExplorerOAuth2AspNET.Models;
 using CommitExplorerOAuth2AspNET.Service;
 using Microsoft.AspNetCore.Mvc;
@@ -9,9 +11,11 @@ namespace CommitExplorerOAuth2AspNET.Pages
     public class ManagerModel : PageModel
     {
         private readonly GitHubService _gitHubService;
-        public ManagerModel(GitHubService gitHubService)
+        private readonly GitHubController _gitHubController;
+        public ManagerModel(GitHubService gitHubService, GitHubController gitHubController)
         {
             _gitHubService = gitHubService;
+            _gitHubController = gitHubController;
         }
         public void OnGet()
         {
@@ -21,7 +25,8 @@ namespace CommitExplorerOAuth2AspNET.Pages
         [ValidateAntiForgeryToken]
         public async Task OnPost()
         {
-            commits = await _gitHubService.GetCommits(User, owner, repo);
+            var gitHubCommits = await _gitHubService.GetCommits(User, owner, repo);
+            commits = await _gitHubController.AddCommits(gitHubCommits, owner, repo);
         }
 
 
@@ -32,6 +37,6 @@ namespace CommitExplorerOAuth2AspNET.Pages
         public string repo { get; set; }
 
         [BindProperty]
-        public List<GitHubCommit> commits { get; set; } = new();
+        public List<GitCommit> commits { get; set; } = new();
     }
 }

@@ -6,8 +6,8 @@ namespace CommitExplorerOAuth2AspNET.Service
 {
     public class GitHubService
     {
-        private readonly GitConfiguration _gitConfiguration;
-        public GitHubService(GitConfiguration gitConfiguration) 
+        private readonly MyConfiguration _gitConfiguration;
+        public GitHubService(MyConfiguration gitConfiguration) 
         {
             _gitConfiguration = gitConfiguration;//.Get<GitConfiguration>();
         }
