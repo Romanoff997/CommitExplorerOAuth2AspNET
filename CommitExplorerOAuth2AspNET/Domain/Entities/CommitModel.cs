@@ -35,7 +35,7 @@ namespace CommitExplorerOAuth2AspNET.Domain.Entities
         public Guid Id { get; set; }
         public Guid? GitRepositoryId { get; set; }
         public string author { get; set; }
-        public string? sha { get; set; }
+        public string sha { get; set; }
         public virtual GitRepository GitRepository { get; set; }
         public string json { get; set; }
     }

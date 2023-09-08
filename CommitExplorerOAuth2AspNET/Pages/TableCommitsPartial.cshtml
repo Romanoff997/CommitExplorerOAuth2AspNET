@@ -1,0 +1,38 @@
+﻿@using CommitExplorerOAuth2AspNET.Domain.Entities;
+
+@model List<GitCommit>
+
+@{
+
+}
+<table class="table">
+    <thead>
+        <tr>
+            <th>Login</th>
+            <th>NodeId</th>
+            <th>Check delete</th>
+        </tr>
+    </thead>
+
+    <tbody id="oi">
+        
+            @foreach (var emp in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(ModelIetm=>emp.author)
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(ModelIetm=>emp.sha)
+                    </td>
+
+                    <td>
+                        <input type="checkbox" class="selectedEntities" data-id="@Html.DisplayFor(ModelIetm=>emp.Id)"  />
+                    </td>
+
+                </tr>
+            }
+        }
+    </tbody>
+</table>

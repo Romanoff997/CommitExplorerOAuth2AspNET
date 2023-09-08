@@ -17,17 +17,33 @@ namespace SimplifyLink.Domain.Repositories.EntityFramework
             _context = context;
             _converter = converter;
         }
-        public async Task<List<GitCommit>> GetCommits(List<GitHubCommit> commits, string owner, string repo)
+        public async Task<List<GitCommit>> GetCommits(string owner, string repo)
+        {
+            var user = await _context.UserEntity.FirstOrDefaultAsync(user => user.Name == owner);
+            if (user != null)
+            {
+                var repository = _context.RepoEntity.Include(repository => repository.GitCommits).FirstOrDefault(x => x.Name == repo && x.GitUser.Equals(user));
+                return repository?.GitCommits.ToList();
+            }
+
+            return null;
+        }
+        public async Task DeleteCommits(List<string> deleteId, string owner, string repo)
+        {
+            var deleteList = await _context.CommitEntity.Where(e => deleteId.Contains(e.Id.ToString())).ToListAsync();
+            _context.CommitEntity.RemoveRange(deleteList.ToList());
+            await _context.SaveChangesAsync();
+
+        }
+        public async Task UpdateCommits(List<GitHubCommit> commits, string owner, string repo)
         {
             var user = await AddUser(owner);
 
-            var repository = await AddRepository(owner, user);
+            var repository = await AddRepository(repo, user);
 
             var commitsList = await AddCommits(repository, commits);
 
             await _context.SaveChangesAsync();
-
-            return commitsList;
         }
         public async Task<GitUser> AddUser(string owner)
         {
@@ -60,21 +76,25 @@ namespace SimplifyLink.Domain.Repositories.EntityFramework
         }            
         public async Task<List<GitCommit>> AddCommits(GitRepository repository, List<GitHubCommit> gitHubCommits)
         {
-            List<GitCommit> commits = repository.GitCommits?.ToList();
-            if (commits == null)
+            List<GitCommit> currCommits = repository.GitCommits?.ToList();
+            var commits = gitHubCommits.Select(x => new GitCommit()
             {
-                commits = gitHubCommits.Select(x => new GitCommit()
-                {
-                    GitRepository = repository,
-                    GitRepositoryId = repository.Id,
-                    
-                    author = x.Author.Login,
-                    sha = x.Sha,
+                GitRepository = repository,
+                GitRepositoryId = repository.Id,
 
-                    json = _converter.WriteJson(x)
-                }).ToList();
-                await _context.CommitEntity.AddRangeAsync(commits);
+                author = x.Author.Login,
+                sha = x.Sha,
+
+                json = _converter.WriteJson(x)
+            }).ToList();
+
+            if (currCommits != null)
+            {
+                _context.CommitEntity.RemoveRange(currCommits);
             }
+
+            await _context.CommitEntity.AddRangeAsync(commits);
+
             return commits;
         }
     }

@@ -17,7 +17,7 @@ namespace CommitExplorerOAuth2AspNET.Domain.Repositories
         public DbSet<GitCommit> CommitEntity { get; set; }
         public MyDbContext(DbContextOptions<MyDbContext> options) : base(options)
         {
-            Database.EnsureDeleted();
+
             Database.EnsureCreated();
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)

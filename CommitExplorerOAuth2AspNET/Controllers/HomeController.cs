@@ -14,7 +14,7 @@ namespace CommitExplorerOAuth2AspNET.Controllers
             _gitHubService = gitHubService;
         }
 
-        public async Task<IActionResult> Index(string code="")
+        public async Task<IActionResult> Index()
         {
             if (_gitHubService.GetAccessToken(User) is { })
             {

@@ -11,16 +11,22 @@ namespace CommitExplorerOAuth2AspNET.Controllers
     public class GitHubController : Controller
     {
         private readonly DataManager _dataManager;
-        private readonly IMapingService _mapper;
         public GitHubController(DataManager dataManager, IMapingService mapper )
         {
             _dataManager = dataManager;
-            _mapper = mapper;
         }
-        public async Task<List<GitCommit>> AddCommits(List<GitHubCommit> commits, string owner, string repo)
+        public async Task UpdateCommits(List<GitHubCommit> commits, string owner, string repo)
         {
 
-            return await _dataManager.CommitRepository.GetCommits(commits, owner, repo);
+            await _dataManager.CommitRepository.UpdateCommits(commits, owner, repo);
+        }
+        public async Task<List<GitCommit>> GetCommits(string owner, string repo)
+        {
+            return await _dataManager.CommitRepository.GetCommits(owner, repo);
+        }
+        public async Task DeleteCommits(List<string> deleteId, string owner, string repo)
+        {
+            await _dataManager.CommitRepository.DeleteCommits(deleteId, owner, repo);
         }
 
     }

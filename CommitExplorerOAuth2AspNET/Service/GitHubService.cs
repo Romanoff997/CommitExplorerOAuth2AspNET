@@ -9,7 +9,7 @@ namespace CommitExplorerOAuth2AspNET.Service
         private readonly MyConfiguration _gitConfiguration;
         public GitHubService(MyConfiguration gitConfiguration) 
         {
-            _gitConfiguration = gitConfiguration;//.Get<GitConfiguration>();
+            _gitConfiguration = gitConfiguration;
         }
 
         public async Task<List<GitHubCommit>> GetCommits(ClaimsPrincipal user, string owner, string repo)

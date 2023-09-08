@@ -1,4 +1,3 @@
-using AspNet.Security.OAuth.GitHub;
 using CommitExplorerOAuth2AspNET.Controllers;
 using CommitExplorerOAuth2AspNET.Domain.Repositories;
 using CommitExplorerOAuth2AspNET.Domain.Repositories.Abstract;
@@ -13,7 +12,6 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using SimplifyLink.Domain.Repositories.EntityFramework;
-using System.Reflection.Metadata.Ecma335;
 using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -49,7 +47,6 @@ builder.Services.AddAuthentication(o =>
         });
 
 builder.Services.AddDbContext<MyDbContext>(options => options.UseSqlServer(appConfig.connectionString));
-builder.Services.AddDbContext<MyDbContext>();
 builder.Services.AddTransient<GitHubController>();
 builder.Services.AddTransient<ICommitModelRepository, EFCommitModelRepository>();
 builder.Services.AddTransient<DataManager>();
@@ -60,6 +57,7 @@ builder.Services.AddSingleton<IJsonConverter>(json => new JsonNewtonConverter(ne
 
 builder.Services.AddRazorPages();
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
+builder.Services.AddAntiforgery(options => options.HeaderName = "RequestVerificationToken");
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
@@ -79,11 +77,12 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapRazorPages();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
 app.UseEndpoints(endpoints =>
 {
+    endpoints.MapControllerRoute(
+               name: "default",
+               pattern: "{controller=Home}/{action=Index}/{id?}");
+
     endpoints.MapGet("/signout", async ctx =>
     {
         await ctx.SignOutAsync(
@@ -96,3 +95,4 @@ app.UseEndpoints(endpoints =>
 });
 
 app.Run();
+

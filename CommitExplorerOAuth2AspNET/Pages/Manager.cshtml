@@ -1,62 +1,102 @@
 ﻿@page
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
 @model CommitExplorerOAuth2AspNET.Pages.ManagerModel
 @{
 }
 <form method="post">
     <div class="form-group">
         <label asp-for="owner" class="control-label"> owner</label>
-        <input asp-for="owner" type="text" class="form-control">
+        <input asp-for="owner" type="text" class="form-control" id="Name">
         <span asp-validation-for="owner" class="text-danger"></span>
     </div>
     <div class="form-group">
         <label asp-for="repo" class="control-label">repo </label>
-        <input asp-for="repo" type="text" class="form-control">
+        <input asp-for="repo" type="text" class="form-control" id="Repo">
         <span asp-validation-for="repo" class="text-danger"></span>
     </div>
 
 
     @Html.AntiForgeryToken()
-    <input type="submit" class="btn btn-primary" value="Get commits" />
+    <input type="submit" class="btn btn-primary" value="Load commits" />
+        <input type="button" class="btn" value="Get commits" id="GetFromDb" />
+        <input type="button" class="btn" value="Delete commits" id="DeleteFromDb" />
+@*    <a asp-page-handler="FromDb" asp class="btn">Get commits</a>*@
 </form>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Login</th>
-            <th>NodeId</th>
-            <th></th>
-            <th> </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody id="oi">
-        @if (Model.commits != null)
-        {
-            for (int i = 0; i < Model.commits.Count; i++)
-            {
-                <tr>
-                    <td>
-                        <input type="text" class="form-control" asp-for="@Model.commits[i].author" />
-                    </td>
+<div id="listContainer">
+    @Html.Partial("TableCommitsPartial", Model.commits)
+</div>
 
-                    <td>
-                        <input type="text" class="form-control" asp-for="@Model.commits[i].sha" />
-                    </td>
 
-                    <td>
 
-                    </td>
 
-                    <td>
-
-                    </td>
-
-                    <td>
-
-                    </td>
-
-                </tr>
+@section scripts {
+    <script>
+        $(function () {
+            function ChildrenUpdate(list) {
+                $('#listContainer').empty().append(list);
             }
-        }
-    </tbody>
-</table>
+            var selectedEntities = new Array();
+
+            $(document).on('change', '.selectedEntities', function () {
+
+                var entityId = $(this).data('id');
+                if ($(this).is(':checked')) {
+                    selectedEntities.push(entityId);
+                    
+                } else {
+                    var index = selectedEntities.indexOf(entityId);
+                    if (index > -1) {
+                        selectedEntities.splice(index, 1);
+                    }
+                }
+      
+            });
+            // Обработчик клика на кнопку "Удалить"
+            $(document).on('click', "#DeleteFromDb", function () {
+                var token = "@Xsrf.GetAndStoreTokens(HttpContext).RequestToken";
+                
+                $.ajax({
+                    url: "/Manager?handler=DeleteDb", // URL вашего контроллера и действия
+                    type: 'POST',
+                    data: { deleteId: selectedEntities },
+                    
+                    headers: {
+                        "RequestVerificationToken": token
+                    },
+                    success: function (result) {
+                        ChildrenUpdate(result);
+                    },
+                    error: function (xhr, status, error) {
+                        // обработка ошибки
+                    }
+                });
+            });
+
+            $(document).on('click', '#GetFromDb', function () {
+                var token = "@Xsrf.GetAndStoreTokens(HttpContext).RequestToken";
+                $.ajax({
+                    type: "Get",
+                    headers: {
+                        "RequestVerificationToken": token
+                    },
+                    url: "/Manager?handler=FromDb", //"Url.Page("Create","AddChild")", //"/Create?handler=AddChild",//'Url.Action(AddChild, Client)',
+                    data: {
+                            owner: $('#Name').val(),
+                            repo: $('#Repo').val()
+                    },
+                    success: function (result) {
+                        alert(" Done!");
+                        ChildrenUpdate(result);
+                    },
+                    error: function (request, error) {
+                        console.log(arguments);
+                        alert(" Can't do because: " + error);
+                    },
+
+                });
+
+            });
+        });
+    </script>
+}
