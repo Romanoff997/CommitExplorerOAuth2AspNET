@@ -16,9 +16,9 @@ namespace CommitExplorerOAuth2AspNET.Controllers
 
         public async Task<IActionResult> Index()
         {
-            if (_gitHubService.GetAccessToken(User) is { })
+            if (User.Identities.FirstOrDefault(x=>x.AuthenticationType=="GitHub") != null)
             {
-                return RedirectToPage("/Manager");
+                return RedirectToPage("/manager");
             }
             return View();
         }

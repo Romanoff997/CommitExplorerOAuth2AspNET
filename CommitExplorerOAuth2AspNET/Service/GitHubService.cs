@@ -7,6 +7,7 @@ namespace CommitExplorerOAuth2AspNET.Service
     public class GitHubService
     {
         private readonly MyConfiguration _gitConfiguration;
+        public Action disconect;
         public GitHubService(MyConfiguration gitConfiguration) 
         {
             _gitConfiguration = gitConfiguration;
@@ -28,7 +29,7 @@ namespace CommitExplorerOAuth2AspNET.Service
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("Ошибка при получении коммитов: " + ex.Message);
+                    disconect?.Invoke();
                 }
             }
             return new List<GitHubCommit>();

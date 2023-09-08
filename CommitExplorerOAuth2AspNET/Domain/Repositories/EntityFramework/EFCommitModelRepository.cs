@@ -31,9 +31,11 @@ namespace SimplifyLink.Domain.Repositories.EntityFramework
         public async Task DeleteCommits(List<string> deleteId, string owner, string repo)
         {
             var deleteList = await _context.CommitEntity.Where(e => deleteId.Contains(e.Id.ToString())).ToListAsync();
-            _context.CommitEntity.RemoveRange(deleteList.ToList());
-            await _context.SaveChangesAsync();
-
+            if (deleteList.Count > 0)
+            {
+                _context.CommitEntity.RemoveRange(deleteList.ToList());
+                await _context.SaveChangesAsync();
+            }
         }
         public async Task UpdateCommits(List<GitHubCommit> commits, string owner, string repo)
         {
@@ -76,7 +78,7 @@ namespace SimplifyLink.Domain.Repositories.EntityFramework
         }            
         public async Task<List<GitCommit>> AddCommits(GitRepository repository, List<GitHubCommit> gitHubCommits)
         {
-            List<GitCommit> currCommits = repository.GitCommits?.ToList();
+            List<GitCommit> currCommits =  _context.CommitEntity.Where(x => x.GitRepositoryId == repository.Id).ToList();
             var commits = gitHubCommits.Select(x => new GitCommit()
             {
                 GitRepository = repository,
