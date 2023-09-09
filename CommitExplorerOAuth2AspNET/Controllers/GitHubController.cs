@@ -17,8 +17,6 @@ namespace CommitExplorerOAuth2AspNET.Controllers
         {
             _dataManager = dataManager;
             _gitHubService = gitHubService;
-
-            //_gitHubService.disconect = Disconect;
         }
         public async Task UpdateCommits(ClaimsPrincipal user, string owner, string repo)
         {

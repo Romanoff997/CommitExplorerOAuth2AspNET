@@ -1,4 +1,4 @@
-﻿namespace CRUDRazorWebAPI.Client.Middleware
+﻿namespace CommitExplorerOAuth2AspNET.Middleware
 {
 
     public class ErrorHandlingMiddleware

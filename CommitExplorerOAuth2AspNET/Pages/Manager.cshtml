@@ -20,7 +20,6 @@
     <input type="submit" class="btn btn-primary" value="Load commits" />
         <input type="button" class="btn" value="Get commits" id="GetFromDb" />
         <input type="button" class="btn" value="Delete commits" id="DeleteFromDb" />
-@*    <a asp-page-handler="FromDb" asp class="btn">Get commits</a>*@
 </form>
 
 <div id="listContainer">
@@ -52,14 +51,16 @@
                 }
       
             });
-            // Обработчик клика на кнопку "Удалить"
             $(document).on('click', "#DeleteFromDb", function () {
                 var token = "@Xsrf.GetAndStoreTokens(HttpContext).RequestToken";
                 
                 $.ajax({
-                    url: "/Manager?handler=DeleteDb", // URL вашего контроллера и действия
+                    url: "/Manager?handler=DeleteDb", 
                     type: 'POST',
-                    data: { deleteId: selectedEntities },
+                    data: { deleteId: selectedEntities,
+                            owner: $('#Name').val(),
+                            repo: $('#Repo').val()
+                    },
                     
                     headers: {
                         "RequestVerificationToken": token
@@ -68,7 +69,6 @@
                         ChildrenUpdate(result);
                     },
                     error: function (xhr, status, error) {
-                        // обработка ошибки
                     }
                 });
             });
@@ -80,7 +80,7 @@
                     headers: {
                         "RequestVerificationToken": token
                     },
-                    url: "/Manager?handler=FromDb", //"Url.Page("Create","AddChild")", //"/Create?handler=AddChild",//'Url.Action(AddChild, Client)',
+                    url: "/Manager?handler=FromDb", 
                     data: {
                             owner: $('#Name').val(),
                             repo: $('#Repo').val()

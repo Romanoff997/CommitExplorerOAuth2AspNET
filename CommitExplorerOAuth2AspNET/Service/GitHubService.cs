@@ -7,7 +7,7 @@ namespace CommitExplorerOAuth2AspNET.Service
     public class GitHubService
     {
         private readonly MyConfiguration _gitConfiguration;
-        public Action disconect;
+        public event Action disconect;
         public GitHubService(MyConfiguration gitConfiguration) 
         {
             _gitConfiguration = gitConfiguration;

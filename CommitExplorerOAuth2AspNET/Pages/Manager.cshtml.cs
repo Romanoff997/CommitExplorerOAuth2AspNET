@@ -7,11 +7,10 @@ namespace CommitExplorerOAuth2AspNET.Pages
 {
     public class ManagerModel : PageModel
     {
-        //private readonly GitHubService _gitHubService;
+
         private readonly GitHubController _gitHubController;
         public ManagerModel(GitHubController gitHubController)
         {
-            //_gitHubService = gitHubService;
             _gitHubController = gitHubController;
         }
         public void OnGet()
@@ -26,25 +25,22 @@ namespace CommitExplorerOAuth2AspNET.Pages
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> OnGetFromDb(string owner, string repo)
         {
-            return Partial("TableCommitsPartial", await GetCommits("Romanoff997", "SignalRWebApi"));
+            return Partial("TableCommitsPartial", await GetCommits(owner, repo));
         }
 
         [ValidateAntiForgeryToken]
         public async Task OnPost()
         {
-            
-            await _gitHubController.UpdateCommits(User,"Romanoff997", "SignalRWebApi");
-
-            commits = await GetCommits("Romanoff997", "SignalRWebApi");
+            await _gitHubController.UpdateCommits(User, owner, repo);
+            commits = await GetCommits(owner, repo);
         }
 
 
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> OnPostDeleteDb(string[] deleteId)
+        public async Task<IActionResult> OnPostDeleteDb(string[] deleteId, string owner, string repo)
         {
-            await _gitHubController.DeleteCommits(deleteId.ToList(), "Romanoff997", "SignalRWebApi");
-            return Partial("TableCommitsPartial", await GetCommits("Romanoff997", "SignalRWebApi"));
-
+            await _gitHubController.DeleteCommits(deleteId.ToList(), owner, repo);
+            return Partial("TableCommitsPartial", await GetCommits(owner, repo));
         }
         
 

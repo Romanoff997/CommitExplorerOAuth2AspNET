@@ -6,12 +6,8 @@ namespace CommitExplorerOAuth2AspNET.Controllers
 {
     public class HomeController : Controller
     {
- 
-        private  GitHubService _gitHubService;
-        public HomeController( GitHubService gitHubService)
+        public HomeController()
         {
-            //_logger = logger;
-            _gitHubService = gitHubService;
         }
 
         public async Task<IActionResult> Index()
