@@ -1,5 +1,4 @@
-﻿
-using CommitExplorerOAuth2AspNET.Domain.Entities;
+﻿using CommitExplorerOAuth2AspNET.Domain.Entities;
 using Octokit;
 
 namespace CommitExplorerOAuth2AspNET.Interface

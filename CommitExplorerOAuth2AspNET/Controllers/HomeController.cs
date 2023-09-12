@@ -1,5 +1,4 @@
 ﻿using CommitExplorerOAuth2AspNET.Models;
-using CommitExplorerOAuth2AspNET.Service;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CommitExplorerOAuth2AspNET.Controllers

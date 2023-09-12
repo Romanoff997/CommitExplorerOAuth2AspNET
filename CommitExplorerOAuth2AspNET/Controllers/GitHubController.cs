@@ -1,11 +1,7 @@
-﻿
-using CommitExplorerOAuth2AspNET.Domain.Entities;
+﻿using CommitExplorerOAuth2AspNET.Domain.Entities;
 using CommitExplorerOAuth2AspNET.Domain.Repositories;
-using CommitExplorerOAuth2AspNET.Interface;
-using CommitExplorerOAuth2AspNET.Models.Pager;
 using CommitExplorerOAuth2AspNET.Service;
 using Microsoft.AspNetCore.Mvc;
-using Octokit;
 using System.Security.Claims;
 
 namespace CommitExplorerOAuth2AspNET.Controllers
@@ -49,21 +45,7 @@ namespace CommitExplorerOAuth2AspNET.Controllers
         {
             return RedirectToPage("/account");
         }
-        public void Manager(int page = 0)
-        {
-            //if (requestGetClients.data.Count > 0)
-            //{
-            //    const int pageSize = 5;
-            //    if (pg < 1)
-            //        pg = 1;
-            //    int recsCount = requestGetClients.data.Count;
-            //    var pager = new Pager(recsCount, pg, pageSize);
-            //    int recSkip = (pg - 1) * pageSize;
-            //    var data = requestGetClients.data.Skip(recSkip).Take(pager.PageSize).ToList();
-            //    ViewBag.Pager = pager;
-            //    requestGetClients.dataPager = data;
 
-            }
 
         }
 }
