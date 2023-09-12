@@ -1,19 +1,19 @@
 ﻿namespace CommitExplorerOAuth2AspNET.Models.Pager
 {
-    public class Pager
+    public class ListPager
     {
         public int TotalItems { get; private set; } 
-        public int CurrentPage { get; private set; } // номер текущей страницы
+        public int CurrentPage { get; set; } // номер текущей страницы
         public int PageSize { get; private set; } // кол-во объектов на странице
         public int TotalPages { get; private set; }
         public int StartPage { get; private set; }
         public int EndPage { get; private set;}
 
-        public Pager()
+        public ListPager()
         { 
         }
 
-        public Pager(int totalItems, int page, int pageSize = 10)
+        public ListPager(int totalItems, int page, int pageSize = 10)
         {
             int totalPages = (int)Math.Ceiling((decimal)totalItems / (decimal)pageSize);
             int currentPage = page;

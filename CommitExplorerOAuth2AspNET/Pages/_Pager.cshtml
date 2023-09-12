@@ -1,4 +1,4 @@
-﻿@model CommitExplorerOAuth2AspNET.Models.Pager.Pager
+﻿@model CommitExplorerOAuth2AspNET.Models.Pager.ListPager
 
 <div class="container">
 
@@ -8,30 +8,34 @@
             @if (Model.CurrentPage > 1)
             {
                 <li class="page-item">
-                    <a class="page-link" asp-page="Manager" asp-action="Page">First</a>
+                    <button class="page-link" click="Pager(1)">First</button>
                 </li>
                 <li class="page-item">
-                    <a class="page-link" asp-controller="Manager" asp-action="Pager" asp-route-pg="@(Model.CurrentPage-1)">Previous</a>
+                    <button class="page-link" onclick="Pager(@Model.CurrentPage-1)">Previous</button>
                 </li>
 
             }
             @for (var pge = Model.StartPage; pge <= Model.EndPage; pge++)
             {
                 <li class="page-item @(pge ==Model.CurrentPage ? "active": "")">
-                    <a class="page-link" asp-controller="Manager" asp-action="Pager" asp-route-pg="@pge">@pge</a>
+                    <button class="page-link" onclick="Pager(@pge)">@pge</button>
                 </li>
 
             }
             @if (Model.CurrentPage < Model.TotalPages)
             {
                 <li class="page-item">
-                    <a class="page-link" asp-controller="Manager" asp-action="Pager" asp-route-pg="@(Model.CurrentPage+1)">Next</a>
+                    <button class="page-link" onclick="Pager(@Model.CurrentPage+1)">Next</button>
                 </li>
                 <li class="page-item">
-                    <a class="page-link" asp-controller="Manager" asp-action="Pager" asp-route-pg="@(Model.TotalPages)">Last</a>
+                    <button class="page-link" onclick="Pager(@Model.TotalPages)">Last</button>
                 </li>
 
             }
         </ul>
     }
 </div>
+
+<script>
+  
+</script>

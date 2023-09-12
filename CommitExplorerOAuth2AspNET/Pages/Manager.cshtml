@@ -3,13 +3,7 @@
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
 @model CommitExplorerOAuth2AspNET.Pages.ManagerModel
 @{
-    Pager pager = new Pager();
-    int pageNo = 0;
-    if (ViewBag.Pager != null)
-    {
-        pager = ViewBag.Pager;
-        pageNo = pager.CurrentPage;
-    }
+
 }
 <form method="post">
     <div class="form-group">
@@ -30,21 +24,47 @@
         <input type="button" class="btn" value="Delete commits" id="DeleteFromDb" />
 </form>
 
-<partial name="_Pager" model="@pager" />
+
 <div id="listContainer">
     @Html.Partial("TableCommitsPartial", Model.commits)
 </div>
-<partial name="_Pager" model="@pager" />
+
 
 
 
 
 @section scripts {
     <script>
+        function Pager(page) {
+            var token = "@Xsrf.GetAndStoreTokens(HttpContext).RequestToken";
+            alert(token);
+            $.ajax({
+                type: "Get",
+                headers: {
+                    "RequestVerificationToken": token
+                },
+                url: "/Manager?handler=Pager",
+                data: {
+                    pg: page
+                    ,owner: $('#Name').val()
+                    ,repo: $('#Repo').val()
+                },
+                success: function (result) {
+                    ChildrenUpdate(result);
+                },
+                error: function (request, error) {
+                    console.log(arguments);
+                    alert(" Can't do because: " + error);
+                },
+
+            });
+        }
+
+        function ChildrenUpdate(list) {
+            $('#listContainer').empty().append(list);
+        }
+
         $(function () {
-            function ChildrenUpdate(list) {
-                $('#listContainer').empty().append(list);
-            }
             var selectedEntities = new Array();
 
             $(document).on('change', '.selectedEntities', function () {

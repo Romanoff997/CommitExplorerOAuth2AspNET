@@ -22,7 +22,7 @@ namespace SimplifyLink.Domain.Repositories.EntityFramework
             var user = await _context.UserEntity.FirstOrDefaultAsync(user => user.Name == owner);
             if (user != null)
             {
-                var repository = _context.RepoEntity.Include(repository => repository.GitCommits).FirstOrDefault(x => x.Name == repo && x.GitUser.Equals(user));
+                var repository = _context.RepoEntity.Include(x => x.GitCommits).FirstOrDefault(x => x.Name == repo && x.GitUser.Equals(user));
                 int? count = repository?.GitCommits.Count;
                 return count!=null? count.Value : 0;
             }
@@ -35,7 +35,7 @@ namespace SimplifyLink.Domain.Repositories.EntityFramework
             if (user != null)
             {
                 var repository = _context.RepoEntity.Include(repository => repository.GitCommits).FirstOrDefault(x => x.Name == repo && x.GitUser.Equals(user));
-                return repository?.GitCommits.Skip(page*count).Take(count).ToList();
+                return repository?.GitCommits.Skip(page).Take(count).ToList();
             }
 
             return null;
