@@ -3,11 +3,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace CommitExplorerOAuth2AspNET.Domain.Repositories
 {
     public class MyDbContext : DbContext
@@ -17,7 +12,6 @@ namespace CommitExplorerOAuth2AspNET.Domain.Repositories
         public DbSet<GitCommit> CommitEntity { get; set; }
         public MyDbContext(DbContextOptions<MyDbContext> options) : base(options)
         {
-
             Database.EnsureCreated();
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)

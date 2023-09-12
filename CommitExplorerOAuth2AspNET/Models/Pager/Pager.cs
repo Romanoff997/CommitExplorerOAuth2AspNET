@@ -13,9 +13,9 @@
         { 
         }
 
-        public ListPager(int totalItems, int page, int pageSize = 10)
+        public ListPager(int totalItems, int page)
         {
-            int totalPages = (int)Math.Ceiling((decimal)totalItems / (decimal)pageSize);
+            int totalPages = (int)Math.Ceiling((decimal)totalItems / (decimal)PageSize);
             int currentPage = page;
 
             int startPage = currentPage - 5;
@@ -36,7 +36,6 @@
             }
             TotalItems = totalItems;
             CurrentPage = currentPage;
-            PageSize= pageSize;
             TotalPages = totalPages;
             StartPage = startPage;
             EndPage = endPage;

@@ -6,7 +6,7 @@ using CommitExplorerOAuth2AspNET.Domain.Entities;
 using Octokit;
 using CommitExplorerOAuth2AspNET.Shared.Interface;
 
-namespace SimplifyLink.Domain.Repositories.EntityFramework
+namespace CommitExplorerOAuth2AspNET.Domain.Repositories.EntityFramework
 {
     public class EFCommitModelRepository : ICommitModelRepository
     {
@@ -96,7 +96,7 @@ namespace SimplifyLink.Domain.Repositories.EntityFramework
                 GitRepository = repository,
                 GitRepositoryId = repository.Id,
 
-                author = x.Author.Login,
+                author = x.Author!=null ? x.Author.Login.ToString(): " ",
                 sha = x.Sha,
 
                 json = _converter.WriteJson(x)

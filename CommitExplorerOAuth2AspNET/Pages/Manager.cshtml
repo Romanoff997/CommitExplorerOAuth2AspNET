@@ -37,7 +37,6 @@
     <script>
         function Pager(page) {
             var token = "@Xsrf.GetAndStoreTokens(HttpContext).RequestToken";
-            alert(token);
             $.ajax({
                 type: "Get",
                 headers: {

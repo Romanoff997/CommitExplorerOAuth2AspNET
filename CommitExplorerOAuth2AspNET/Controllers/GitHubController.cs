@@ -15,7 +15,7 @@ namespace CommitExplorerOAuth2AspNET.Controllers
         private readonly DataManager _dataManager;
         private readonly GitHubService _gitHubService;
 
-        public GitHubController(DataManager dataManager, GitHubService gitHubService, IMapingService mapper)
+        public GitHubController(DataManager dataManager, GitHubService gitHubService)
         {
             _dataManager = dataManager;
             _gitHubService = gitHubService;

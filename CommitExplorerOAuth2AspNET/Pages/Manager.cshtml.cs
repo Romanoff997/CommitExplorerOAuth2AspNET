@@ -63,6 +63,7 @@ namespace CommitExplorerOAuth2AspNET.Pages
             if (deleteList.Count > 0)
             {
                 commits.data = commits.data.Except(deleteList).ToList();
+                commits.pager = new ListPager(commits.pager.TotalPages, page);
             }
         
             await _gitHubController.DeleteCommits(deleteId.ToList(), owner, repo);

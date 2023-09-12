@@ -1,8 +1,8 @@
 using CommitExplorerOAuth2AspNET.Controllers;
 using CommitExplorerOAuth2AspNET.Domain.Repositories;
 using CommitExplorerOAuth2AspNET.Domain.Repositories.Abstract;
+using CommitExplorerOAuth2AspNET.Domain.Repositories.EntityFramework;
 using CommitExplorerOAuth2AspNET.Interface;
-using CommitExplorerOAuth2AspNET.Mappings;
 using CommitExplorerOAuth2AspNET.Middleware;
 using CommitExplorerOAuth2AspNET.Service;
 using CommitExplorerOAuth2AspNET.Services;
@@ -11,7 +11,6 @@ using CommitExplorerOAuth2AspNET.Shared.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
-using SimplifyLink.Domain.Repositories.EntityFramework;
 using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -51,12 +50,10 @@ builder.Services.AddTransient<GitHubController>();
 builder.Services.AddTransient<ICommitModelRepository, EFCommitModelRepository>();
 builder.Services.AddTransient<DataManager>();
 builder.Services.AddTransient<GitHubService>();
-builder.Services.AddTransient<IMapingService, MappingServiceNative>();
 builder.Services.AddSingleton(appConfig);
 builder.Services.AddSingleton<IJsonConverter>(json => new JsonNewtonConverter(new Newtonsoft.Json.JsonSerializerSettings()));
 
 builder.Services.AddRazorPages();
-builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 builder.Services.AddAntiforgery(options => options.HeaderName = "RequestVerificationToken");
 var app = builder.Build();
 
