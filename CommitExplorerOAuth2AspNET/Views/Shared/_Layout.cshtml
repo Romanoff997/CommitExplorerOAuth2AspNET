@@ -22,15 +22,12 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
                     </ul>
                     <ul class="navbar-nav">
                         @if (User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Account" asp-action="Index">Hello @User.Identity?.Name!</a>
+                                <a class="nav-link text-dark" asp-controller="GitHub" asp-action="Account">Hello @User.Identity?.Name!</a>
                             </li>
                             <li class="nav-item">
                                 <form class="form-inline" asp-controller="GitHub" asp-action="SignOut">

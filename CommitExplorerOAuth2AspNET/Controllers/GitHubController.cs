@@ -2,6 +2,7 @@
 using CommitExplorerOAuth2AspNET.Domain.Entities;
 using CommitExplorerOAuth2AspNET.Domain.Repositories;
 using CommitExplorerOAuth2AspNET.Interface;
+using CommitExplorerOAuth2AspNET.Models.Pager;
 using CommitExplorerOAuth2AspNET.Service;
 using Microsoft.AspNetCore.Mvc;
 using Octokit;
@@ -13,7 +14,9 @@ namespace CommitExplorerOAuth2AspNET.Controllers
     {
         private readonly DataManager _dataManager;
         private readonly GitHubService _gitHubService;
-        public GitHubController(DataManager dataManager, GitHubService gitHubService, IMapingService mapper )
+        //private static Pager _pager = new ClientRequestViewModel();
+        private const int count = 5;
+        public GitHubController(DataManager dataManager, GitHubService gitHubService, IMapingService mapper)
         {
             _dataManager = dataManager;
             _gitHubService = gitHubService;
@@ -23,9 +26,13 @@ namespace CommitExplorerOAuth2AspNET.Controllers
             var commits = await _gitHubService.GetCommits(user, owner, repo);
             await _dataManager.CommitRepository.UpdateCommits(commits, owner, repo);
         }
-        public async Task<List<GitCommit>> GetCommits(string owner, string repo)
+        public async Task<int> GetTotalCount(string owner, string repo)
         {
-            return await _dataManager.CommitRepository.GetCommits(owner, repo);
+            return await _dataManager.CommitRepository.GetTotalCount(owner, repo);
+        }
+        public async Task<List<GitCommit>> GetCommits(string owner, string repo, int page=1)
+        {
+            return await _dataManager.CommitRepository.GetCommits(owner, repo, page, count);
         }
         public async Task DeleteCommits(List<string> deleteId, string owner, string repo)
         {
@@ -36,13 +43,28 @@ namespace CommitExplorerOAuth2AspNET.Controllers
             return Redirect("/signout");
         }
         public IActionResult SignIn()
-        { 
+        {
             return Redirect("/signin");
         }
-        private void Disconect()
+        public IActionResult Account()
         {
-             Redirect("/signout");
+            return RedirectToPage("/account");
         }
+        public void Manager(int page = 0)
+        {
+            //if (requestGetClients.data.Count > 0)
+            //{
+            //    const int pageSize = 5;
+            //    if (pg < 1)
+            //        pg = 1;
+            //    int recsCount = requestGetClients.data.Count;
+            //    var pager = new Pager(recsCount, pg, pageSize);
+            //    int recSkip = (pg - 1) * pageSize;
+            //    var data = requestGetClients.data.Skip(recSkip).Take(pager.PageSize).ToList();
+            //    ViewBag.Pager = pager;
+            //    requestGetClients.dataPager = data;
 
-    }
+            }
+
+        }
 }

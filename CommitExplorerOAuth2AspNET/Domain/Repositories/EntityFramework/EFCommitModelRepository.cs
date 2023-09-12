@@ -17,13 +17,25 @@ namespace SimplifyLink.Domain.Repositories.EntityFramework
             _context = context;
             _converter = converter;
         }
-        public async Task<List<GitCommit>> GetCommits(string owner, string repo)
+        public async Task<int> GetTotalCount(string owner, string repo)
         {
             var user = await _context.UserEntity.FirstOrDefaultAsync(user => user.Name == owner);
             if (user != null)
             {
                 var repository = _context.RepoEntity.Include(repository => repository.GitCommits).FirstOrDefault(x => x.Name == repo && x.GitUser.Equals(user));
-                return repository?.GitCommits.ToList();
+                int? count = repository?.GitCommits.Count;
+                return count!=null? count.Value : 0;
+            }
+
+            return 0;
+        }
+        public async Task<List<GitCommit>> GetCommits(string owner, string repo, int page, int count)
+        {
+            var user = await _context.UserEntity.FirstOrDefaultAsync(user => user.Name == owner);
+            if (user != null)
+            {
+                var repository = _context.RepoEntity.Include(repository => repository.GitCommits).FirstOrDefault(x => x.Name == repo && x.GitUser.Equals(user));
+                return repository?.GitCommits.Skip(page*count).Take(count).ToList();
             }
 
             return null;

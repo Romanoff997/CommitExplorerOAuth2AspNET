@@ -1,7 +1,15 @@
 ﻿@page
+@using CommitExplorerOAuth2AspNET.Models.Pager;
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
 @model CommitExplorerOAuth2AspNET.Pages.ManagerModel
 @{
+    Pager pager = new Pager();
+    int pageNo = 0;
+    if (ViewBag.Pager != null)
+    {
+        pager = ViewBag.Pager;
+        pageNo = pager.CurrentPage;
+    }
 }
 <form method="post">
     <div class="form-group">
@@ -22,9 +30,11 @@
         <input type="button" class="btn" value="Delete commits" id="DeleteFromDb" />
 </form>
 
+<partial name="_Pager" model="@pager" />
 <div id="listContainer">
     @Html.Partial("TableCommitsPartial", Model.commits)
 </div>
+<partial name="_Pager" model="@pager" />
 
 
 

@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Security.Claims;
-using CommitExplorerOAuth2AspNET.Models;
 using Octokit;
-using CommitExplorerOAuth2AspNET.Controllers;
 using CommitExplorerOAuth2AspNET.Service;
 
 namespace CommitExplorerOAuth2AspNET.Pages
