@@ -1,10 +1,5 @@
 ﻿using CommitExplorerOAuth2AspNET.Domain.Entities;
 using Octokit;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CommitExplorerOAuth2AspNET.Domain.Repositories.Abstract
 {
