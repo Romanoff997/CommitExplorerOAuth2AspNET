@@ -8,43 +8,31 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CommitExplorerOAuth2AspNET.Pages
 {
+    [ValidateAntiForgeryToken]
     public class ManagerModel : PageModel
     {
-
         private readonly GitHubController _gitHubController;
         public ManagerModel(GitHubController gitHubController)
         {
             _gitHubController = gitHubController;
         }
+
         public void OnGet()
         {
 
         }
-
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> OnGetPager(int pg)
-        {
-            await InitGitCommitsViewModel(pg);
-            return Partial("TableCommitsPartial", commits);
-        }
+ 
         private async Task<int> GetTotalCount()
         {
             return await _gitHubController.GetTotalCount(owner, repo);
         }
+
         private async Task<List<GitCommit>> GetCommits(int page, int pageSize)
         {
             return await _gitHubController.GetCommits(owner, repo, page, pageSize);
         }
 
-
-        [ValidateAntiForgeryToken]
-        public async Task OnPost()
-        {
-            await _gitHubController.UpdateCommits(User, owner, repo);
-            await InitGitCommitsViewModel();
-        }
-
-        public async Task InitGitCommitsViewModel(int page=1)
+        private async Task InitGitCommitsViewModel(int page = 1)
         {
             int recsCount = await GetTotalCount();
             commits.pager = new ListPager(recsCount, page);
@@ -53,10 +41,20 @@ namespace CommitExplorerOAuth2AspNET.Pages
             commits.data = await GetCommits(recSkip, pageSize);
         }
         
-        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> OnGetPager(int pg)
+        {
+            await InitGitCommitsViewModel(pg);
+            return Partial("TableCommitsPartial", commits);
+        }
+
+        public async Task OnPost()
+        {
+            await _gitHubController.UpdateCommits(User, owner, repo);
+            await InitGitCommitsViewModel();
+        }
+
         public async Task<IActionResult> OnPostDeleteDb(string[] deleteId, int page)
         {
-            
             await InitGitCommitsViewModel(page);
             var deleteList = commits.data.Where(e => deleteId.Contains(e.Id.ToString())).ToList() ;
 

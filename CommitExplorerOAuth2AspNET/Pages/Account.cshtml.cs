@@ -19,7 +19,6 @@ namespace CommitExplorerOAuth2AspNET.Pages
         {
             Claims = User.Claims.ToList();
 
-            // 6. From GitHub
             if (_gitHubService.GetAccessToken(User) is { } accessToken)
             {
                 var client = new GitHubClient(new ProductHeaderValue("test"))
