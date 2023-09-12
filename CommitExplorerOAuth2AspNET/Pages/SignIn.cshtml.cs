@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.DependencyInjection;
+
 namespace CommitExplorerOAuth2AspNET.Pages
 {
     public class SignIn :PageModel

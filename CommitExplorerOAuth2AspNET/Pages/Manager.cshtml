@@ -83,11 +83,12 @@
             });
             $(document).on('click', "#DeleteFromDb", function () {
                 var token = "@Xsrf.GetAndStoreTokens(HttpContext).RequestToken";
-                
+                var page = $("#currPage").val();
                 $.ajax({
                     url: "/Manager?handler=DeleteDb", 
                     type: 'POST',
                     data: { deleteId: selectedEntities,
+                            pg: page,
                             owner: $('#Name').val(),
                             repo: $('#Repo').val()
                     },
@@ -104,28 +105,9 @@
             });
 
             $(document).on('click', '#GetFromDb', function () {
-                var token = "@Xsrf.GetAndStoreTokens(HttpContext).RequestToken";
-                $.ajax({
-                    type: "Get",
-                    headers: {
-                        "RequestVerificationToken": token
-                    },
-                    url: "/Manager?handler=FromDb", 
-                    data: {
-                            owner: $('#Name').val(),
-                            repo: $('#Repo').val()
-                    },
-                    success: function (result) {
-                        ChildrenUpdate(result);
-                    },
-                    error: function (request, error) {
-                        console.log(arguments);
-                        alert(" Can't do because: " + error);
-                    },
-
-                });
-
+                Pager(1);
             });
+
         });
     </script>
 }

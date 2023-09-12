@@ -1,11 +1,10 @@
-using Azure;
 using CommitExplorerOAuth2AspNET.Controllers;
 using CommitExplorerOAuth2AspNET.Domain.Entities;
 using CommitExplorerOAuth2AspNET.Models;
 using CommitExplorerOAuth2AspNET.Models.Pager;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Octokit;
+using Microsoft.EntityFrameworkCore;
 
 namespace CommitExplorerOAuth2AspNET.Pages
 {
@@ -23,53 +22,50 @@ namespace CommitExplorerOAuth2AspNET.Pages
         }
 
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> OnGetPager(int pg, string owner, string repo)
+        public async Task<IActionResult> OnGetPager(int pg)
         {
-            this.owner = owner;
-            this.repo = repo;
-            if (pg>0)
-            {
-                await NewCommit(pg);
-            }
+            await InitGitCommitsViewModel(pg);
             return Partial("TableCommitsPartial", commits);
         }
         private async Task<int> GetTotalCount()
         {
             return await _gitHubController.GetTotalCount(owner, repo);
         }
-        private async Task<List<GitCommit>> GetCommits(int page=1)
+        private async Task<List<GitCommit>> GetCommits(int page, int pageSize)
         {
-            return await _gitHubController.GetCommits(owner, repo, page);
+            return await _gitHubController.GetCommits(owner, repo, page, pageSize);
         }
 
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> OnGetFromDb()
-        {
-            commits.data = await GetCommits();
-            return Partial("TableCommitsPartial", commits);
-        }
 
         [ValidateAntiForgeryToken]
         public async Task OnPost()
         {
             await _gitHubController.UpdateCommits(User, owner, repo);
-            await NewCommit();
+            await InitGitCommitsViewModel();
         }
 
-        public async Task NewCommit(int page=1)
+        public async Task InitGitCommitsViewModel(int page=1)
         {
-            const int pageSize = 5;
             int recsCount = await GetTotalCount();
-            commits.pager = new ListPager(recsCount, page, pageSize);
+            commits.pager = new ListPager(recsCount, page);
+            var pageSize = commits.pager.PageSize;
             int recSkip = (page - 1) * pageSize;
-            commits.data = await GetCommits(recSkip);
+            commits.data = await GetCommits(recSkip, pageSize);
         }
         
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> OnPostDeleteDb(string[] deleteId)
+        public async Task<IActionResult> OnPostDeleteDb(string[] deleteId, int page)
         {
+            
+            await InitGitCommitsViewModel(page);
+            var deleteList = commits.data.Where(e => deleteId.Contains(e.Id.ToString())).ToList() ;
+
+            if (deleteList.Count > 0)
+            {
+                commits.data = commits.data.Except(deleteList).ToList();
+            }
+        
             await _gitHubController.DeleteCommits(deleteId.ToList(), owner, repo);
-            await NewCommit();
             return Partial("TableCommitsPartial", commits);
         }
 

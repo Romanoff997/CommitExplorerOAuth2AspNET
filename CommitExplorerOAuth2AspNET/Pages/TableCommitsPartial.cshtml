@@ -38,5 +38,6 @@
 </table>
 @if (Model.pager != null)
 {
+    <input type="hidden" value="@Model.pager.CurrentPage" id="currPage" />
     <partial name="_Pager" model="@Model.pager" />
 }

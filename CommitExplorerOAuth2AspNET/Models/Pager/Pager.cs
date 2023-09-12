@@ -4,7 +4,7 @@
     {
         public int TotalItems { get; private set; } 
         public int CurrentPage { get; set; } // номер текущей страницы
-        public int PageSize { get; private set; } // кол-во объектов на странице
+        public int PageSize { get; } = 20; // кол-во объектов на странице
         public int TotalPages { get; private set; }
         public int StartPage { get; private set; }
         public int EndPage { get; private set;}

@@ -14,8 +14,7 @@ namespace CommitExplorerOAuth2AspNET.Controllers
     {
         private readonly DataManager _dataManager;
         private readonly GitHubService _gitHubService;
-        //private static Pager _pager = new ClientRequestViewModel();
-        private const int count = 5;
+
         public GitHubController(DataManager dataManager, GitHubService gitHubService, IMapingService mapper)
         {
             _dataManager = dataManager;
@@ -30,9 +29,9 @@ namespace CommitExplorerOAuth2AspNET.Controllers
         {
             return await _dataManager.CommitRepository.GetTotalCount(owner, repo);
         }
-        public async Task<List<GitCommit>> GetCommits(string owner, string repo, int page=1)
+        public async Task<List<GitCommit>> GetCommits(string owner, string repo, int page, int pageSize)
         {
-            return await _dataManager.CommitRepository.GetCommits(owner, repo, page, count);
+            return await _dataManager.CommitRepository.GetCommits(owner, repo, page, pageSize);
         }
         public async Task DeleteCommits(List<string> deleteId, string owner, string repo)
         {
