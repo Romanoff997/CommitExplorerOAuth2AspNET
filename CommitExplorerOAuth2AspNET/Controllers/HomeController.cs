@@ -1,21 +1,25 @@
 ﻿using CommitExplorerOAuth2AspNET.Models;
+using CommitExplorerOAuth2AspNET.Service;
 using Microsoft.AspNetCore.Mvc;
-
+using System.Security.Claims;
 namespace CommitExplorerOAuth2AspNET.Controllers
 {
     public class HomeController : Controller
     {
-        public HomeController()
+        private readonly GitHubService _gitHubService;
+        public HomeController(GitHubService gitHubService)
         {
+            _gitHubService = gitHubService;
         }
 
         public async Task<IActionResult> Index()
         {
-            if (User.Identities.FirstOrDefault(x=>x.AuthenticationType=="GitHub") != null)
+            var user = User.Identities.FirstOrDefault(x => x.AuthenticationType == "GitHub");
+            if (user!=null && await _gitHubService.CheckUser(new ClaimsPrincipal(user)))
             {
                 return RedirectToPage("/manager");
             }
-            return View();
+            return Redirect("/signin");
         }
 
         public IActionResult Privacy()

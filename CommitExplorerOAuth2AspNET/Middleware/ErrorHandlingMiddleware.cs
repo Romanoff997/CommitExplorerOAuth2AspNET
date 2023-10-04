@@ -1,4 +1,8 @@
-﻿namespace CommitExplorerOAuth2AspNET.Middleware
+﻿using Azure;
+using Octokit;
+using System.Net;
+
+namespace CommitExplorerOAuth2AspNET.Middleware
 {
 
     public class ErrorHandlingMiddleware
@@ -14,13 +18,24 @@
 
         public async Task Invoke(HttpContext context)
         {
+
             try
             {
                 await _next(context);
             }
-            catch (Exception ex)
+            catch (Exception error)
             {
-                _logger.LogError(ex, "An unhandled exception occurred.");
+                var response = context.Response;
+                response.ContentType = "application/json";
+
+                switch (error)
+                {
+                    case AuthorizationException e:
+                        response.HttpContext.Response.Redirect("/signout");
+                        break;
+                    default:
+                        break;
+                }
             }
         }
     }

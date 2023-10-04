@@ -1,6 +1,9 @@
 ﻿using Octokit;
 using CommitExplorerOAuth2AspNET.Models;
 using System.Security.Claims;
+using Microsoft.Identity.Client;
+using System.Runtime.CompilerServices;
+using Azure.Core;
 
 namespace CommitExplorerOAuth2AspNET.Service
 {
@@ -12,26 +15,47 @@ namespace CommitExplorerOAuth2AspNET.Service
             _gitConfiguration = gitConfiguration;
         }
 
-        public async Task<List<GitHubCommit>> GetCommits(ClaimsPrincipal user, string owner, string repo)
+        public async Task<bool> CheckUser(ClaimsPrincipal user)
         {
             if (GetAccessToken(user) is { } accessToken)
             {
-                var github = new GitHubClient(new ProductHeaderValue("MyApp"))
-                {
-                    Credentials = new Credentials(accessToken)
-                };
+                var github = new GitHubClient(new ProductHeaderValue("MyApp"));
+                github.Credentials = new Credentials(accessToken);
 
                 try
                 {
-                    var result = await github.Repository.Commit.GetAll(owner, repo);
-                    return result.ToList();
+                    await github.User.Current();
+                    return true;
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("Ошибка при получении коммитов: " + ex.Message);
+                    throw new AuthorizationException();
                 }
             }
-            return new List<GitHubCommit>();
+            return false;
+        }
+
+
+        public async Task<List<GitHubCommit>> GetCommits(ClaimsPrincipal user, string owner, string repo)
+        {
+            try
+            {
+                if (GetAccessToken(user) is { } accessToken)
+                {
+                    var github = new GitHubClient(new ProductHeaderValue("c"))
+                    {
+                        Credentials = new Credentials(accessToken)
+                    };
+                    var result = await github.Repository.Commit.GetAll(owner, repo);
+                    return result.ToList();
+                }
+                throw new Exception();
+            }        
+            catch (Exception ex)
+            {
+                Console.WriteLine("Ошибка при получении коммитов: " + ex.Message);
+                throw new AuthorizationException();
+            }
         }
 
 

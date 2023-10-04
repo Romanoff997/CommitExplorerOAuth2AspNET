@@ -2,7 +2,7 @@
 using CommitExplorerOAuth2AspNET.Domain.Repositories.Abstract;
 using CommitExplorerOAuth2AspNET.Domain.Entities;
 using Octokit;
-using CommitExplorerOAuth2AspNET.Shared.Interface;
+using CommitExplorerOAuth2AspNET.Service;
 
 namespace CommitExplorerOAuth2AspNET.Domain.Repositories.EntityFramework
 {

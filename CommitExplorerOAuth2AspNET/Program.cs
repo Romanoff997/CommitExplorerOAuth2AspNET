@@ -4,8 +4,6 @@ using CommitExplorerOAuth2AspNET.Domain.Repositories.Abstract;
 using CommitExplorerOAuth2AspNET.Domain.Repositories.EntityFramework;
 using CommitExplorerOAuth2AspNET.Middleware;
 using CommitExplorerOAuth2AspNET.Service;
-using CommitExplorerOAuth2AspNET.Shared.Interface;
-using CommitExplorerOAuth2AspNET.Shared.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
@@ -16,7 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 ConfigurationManager configuration = builder.Configuration;
 var appConfig = configuration.GetSection("AppConfiguration").Get<MyConfiguration>();
-
+appConfig.clientId = configuration["github:clientId"];
 builder.Services.AddAuthentication(o =>
 {
     o.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -74,6 +72,7 @@ app.MapRazorPages();
 
 app.UseEndpoints(endpoints =>
 {
+    
     endpoints.MapControllerRoute(
                name: "default",
                pattern: "{controller=Home}/{action=Index}/{id?}");
