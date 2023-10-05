@@ -2,6 +2,7 @@ using CommitExplorerOAuth2AspNET.Controllers;
 using CommitExplorerOAuth2AspNET.Domain.Entities;
 using CommitExplorerOAuth2AspNET.Models;
 using CommitExplorerOAuth2AspNET.Models.Pager;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 namespace CommitExplorerOAuth2AspNET.Pages
 {
     [ValidateAntiForgeryToken]
+    [Authorize]
     public class ManagerModel : PageModel
     {
         private readonly GitHubController _gitHubController;
