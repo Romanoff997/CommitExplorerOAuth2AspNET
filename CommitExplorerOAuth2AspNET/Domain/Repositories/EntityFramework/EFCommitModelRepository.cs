@@ -20,25 +20,26 @@ namespace CommitExplorerOAuth2AspNET.Domain.Repositories.EntityFramework
             var user = await _context.UserEntity.FirstOrDefaultAsync(user => user.Name == owner);
             if (user != null)
             {
-                var repository = _context.RepoEntity.Include(x => x.GitCommits).FirstOrDefault(x => x.Name == repo && x.GitUser.Equals(user));
-                int? count = repository?.GitCommits.Count;
+                var repository = await _context.RepoEntity.FirstOrDefaultAsync(x => x.Name == repo && x.GitUser.Id==user.Id);
+                int? count =  _context.CommitEntity.Where(x => x.GitRepositoryId == repository.Id)?.Count();//repository?.GitCommits.Count;
                 return count!=null? count.Value : 0;
             }
 
             return 0;
         }
-        public async Task<List<GitCommit>> GetCommits(string owner, string repo, int page, int pageSize)
+        public async Task<IEnumerable<GitCommit>> GetCommits(string owner, string repo, int page, int pageSize)
         {
             var user = await _context.UserEntity.FirstOrDefaultAsync(user => user.Name == owner);
             if (user != null)
             {
                 var repository = _context.RepoEntity.Include(repository => repository.GitCommits).FirstOrDefault(x => x.Name == repo && x.GitUser.Equals(user));
-                return repository?.GitCommits.Skip(page).Take(pageSize).ToList();
+                var commits = repository?.GitCommits.Skip(page).Take(pageSize);
+                return commits;
             }
 
             return null;
         }
-        public async Task DeleteCommits(List<string> deleteId, string owner, string repo)
+        public async Task DeleteCommits(IEnumerable<string> deleteId, string owner, string repo)
         {
             var deleteList = await _context.CommitEntity.Where(e => deleteId.Contains(e.Id.ToString())).ToListAsync();
             if (deleteList.Count > 0)
@@ -47,7 +48,7 @@ namespace CommitExplorerOAuth2AspNET.Domain.Repositories.EntityFramework
                 await _context.SaveChangesAsync();
             }
         }
-        public async Task UpdateCommits(List<GitHubCommit> commits, string owner, string repo)
+        public async Task UpdateCommits(IEnumerable<GitHubCommit> commits, string owner, string repo)
         {
             var user = await AddUser(owner);
 
@@ -86,19 +87,19 @@ namespace CommitExplorerOAuth2AspNET.Domain.Repositories.EntityFramework
             }
             return repository;
         }            
-        public async Task<List<GitCommit>> AddCommits(GitRepository repository, List<GitHubCommit> gitHubCommits)
+        public async Task<IEnumerable<GitCommit>> AddCommits(GitRepository repository, IEnumerable<GitHubCommit> gitHubCommits)
         {
-            List<GitCommit> currCommits =  _context.CommitEntity.Where(x => x.GitRepositoryId == repository.Id).ToList();
+            IEnumerable<GitCommit> currCommits = _context.CommitEntity.Where(x => x.GitRepositoryId == repository.Id);
             var commits = gitHubCommits.Select(x => new GitCommit()
             {
                 GitRepository = repository,
                 GitRepositoryId = repository.Id,
 
-                author = x.Author!=null ? x.Author.Login.ToString(): " ",
+                author = x.Author != null ? x.Author.Login.ToString() : " ",
                 sha = x.Sha,
 
                 json = _converter.WriteJson(x)
-            }).ToList();
+            });
 
             if (currCommits != null)
             {

@@ -14,7 +14,7 @@
         </tr>
     </thead>
     <tbody id="oi">
-        @if (Model.data != null && Model.data.Count>0)
+        @if (Model.data != null && Model.data.Count()>0)
         {
             @foreach (var emp in Model.data)
             {

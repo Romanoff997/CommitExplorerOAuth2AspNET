@@ -29,7 +29,7 @@ namespace CommitExplorerOAuth2AspNET.Pages
             return await _gitHubController.GetTotalCount(owner, repo);
         }
 
-        private async Task<List<GitCommit>> GetCommits(int page, int pageSize)
+        private async Task<IEnumerable<GitCommit>> GetCommits(int page, int pageSize)
         {
             return await _gitHubController.GetCommits(owner, repo, page, pageSize);
         }

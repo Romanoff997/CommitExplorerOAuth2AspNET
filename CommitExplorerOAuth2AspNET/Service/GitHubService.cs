@@ -36,7 +36,7 @@ namespace CommitExplorerOAuth2AspNET.Service
         }
 
 
-        public async Task<List<GitHubCommit>> GetCommits(ClaimsPrincipal user, string owner, string repo)
+        public async Task<IReadOnlyList<GitHubCommit>> GetCommits(ClaimsPrincipal user, string owner, string repo)
         {
             try
             {
@@ -47,7 +47,7 @@ namespace CommitExplorerOAuth2AspNET.Service
                         Credentials = new Credentials(accessToken)
                     };
                     var result = await github.Repository.Commit.GetAll(owner, repo);
-                    return result.ToList();
+                    return result;
                 }
                 throw new Exception();
             }        

@@ -25,7 +25,7 @@ namespace CommitExplorerOAuth2AspNET.Controllers
         {
             return await _dataManager.CommitRepository.GetTotalCount(owner, repo);
         }
-        public async Task<List<GitCommit>> GetCommits(string owner, string repo, int page, int pageSize)
+        public async Task<IEnumerable<GitCommit>> GetCommits(string owner, string repo, int page, int pageSize)
         {
             return await _dataManager.CommitRepository.GetCommits(owner, repo, page, pageSize);
         }

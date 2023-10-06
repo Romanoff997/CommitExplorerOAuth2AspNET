@@ -6,7 +6,7 @@ namespace CommitExplorerOAuth2AspNET.Models
 {
     public class GitCommitsViewModel
     {
-        public List<GitCommit> data { get; set; }
+        public IEnumerable<GitCommit> data { get; set; }
         public ListPager pager { get; set; }
     }
 }
